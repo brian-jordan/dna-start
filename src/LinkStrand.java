@@ -1,5 +1,9 @@
-
+/* Project 3: DNA and LinkStrand
+ * Brian Jordan
+ * November 13, 2017
+ */
 public class LinkStrand implements IDnaStrand{
+	// Node SubClass to create LinkList Node Objects
 	private class Node {
 		String info;
 		Node next;
@@ -8,7 +12,9 @@ public class LinkStrand implements IDnaStrand{
 			next = null;
 		}
 	}
-	private Node myFirst,myLast;
+	// Instance Variables
+	private Node myFirst;
+	private Node myLast;
 	private long mySize;
 	private int myAppends;
 	public int myIndex;
@@ -17,15 +23,16 @@ public class LinkStrand implements IDnaStrand{
 	public LinkStrand(){
 		this("");
 	}
-	
+	// Constructor of LinkStrand Objects
 	public LinkStrand(String s){
 		initialize(s);
 	}
+	// Returns length of DNA strand
 	@Override
 	public long size() {
 		return mySize;
 	}
-
+	// Initializes the LinkStrand Object instance variables
 	@Override
 	public void initialize(String source) {
 		mySize = source.length();
@@ -36,24 +43,21 @@ public class LinkStrand implements IDnaStrand{
 		myCurrent = myFirst;
 		myLocalIndex = 0;
 	}
+	// returns instance of the LinkStrand class
 	@Override
 	public IDnaStrand getInstance(String source) {
 		return new LinkStrand(source);
 	}
+	// Adds to LinkStrand by appending a new Node to the LinkedList
 	@Override
 	public IDnaStrand append(String dna) {
-		Node list = myFirst;
-		for (int i = 0; i < myAppends; i++){
-			list = list.next;
-		}
-		list.next = new Node(dna);
-		list = list.next;
-		myLast = list;
+		myLast.next = new Node(dna);
+		myLast = myLast.next;
 		mySize += dna.length();
 		myAppends += 1;
 		return this;
 	}
-	// TODO
+	// reverses the DNA strand data by reversing the Nodes of the LinkList and the Strings of each of them
 	@Override
 	public IDnaStrand reverse() {
 		StringBuilder reverseString = new StringBuilder(myFirst.info);
@@ -71,28 +75,33 @@ public class LinkStrand implements IDnaStrand{
 		}
 		return reverseStrand;
 	}
+	// returns the amount of Nodes in the LinkStrand
 	@Override
 	public int getAppendCount() {
 		return myAppends;
 	}
-	// TODO
+	// efficiently returns the character at a certain index of the DNA strand by starting from the previous search index
 	@Override
 	public char charAt(int index) {
-		if (index < 0 || index > mySize){
+		if (index < 0 || index >= mySize){
 			throw new IndexOutOfBoundsException("Index is not within the Strand");
 		}
-		else{
-			while (myIndex != index){
-				myIndex++;
-				myLocalIndex++;
-				if (myLocalIndex >= myCurrent.info.length()){
-					myLocalIndex = 0;
-					myCurrent = myCurrent.next;
-					}
-				}
-			return myCurrent.info.charAt(myLocalIndex);
+		if (myIndex > index){
+			myIndex = 0;
+			myLocalIndex = 0;
+			myCurrent = myFirst;
 		}
-	}
+		while (myIndex != index){
+			myIndex++;
+			myLocalIndex++;
+			if (myLocalIndex >= myCurrent.info.length()){
+				myLocalIndex = 0;
+				myCurrent = myCurrent.next;
+				}
+			}
+		return myCurrent.info.charAt(myLocalIndex);
+}
+	// returns the DNA Strand 
 	public String toString(){
 		Node list = myFirst;
 		StringBuilder s = new StringBuilder();
